@@ -28,7 +28,7 @@ resource "aws_lb" "ecs_alb" {
   security_groups = [aws_security_group.alb_security_group.id]
   subnets            = aws_subnet.ecs_public[*].id
   tags = {
-    Name = "${local.name_prefix}-${random_pet.deployment_id.id}--alb"
+    Name = "${local.name_prefix}-${random_pet.deployment_id.id}-alb"
   }
 }
 
