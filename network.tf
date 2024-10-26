@@ -93,7 +93,7 @@ resource "aws_route_table" "ecs_private_rt" {
   }
 }
 
-resource "aws_route_table_association" "ecs_private_a_rt_attachment" {
+resource "aws_route_table_association" "ecs_private_rt_attachment" {
   count = length(data.aws_availability_zones.azs.names)
   subnet_id      = aws_subnet.ecs_private[count.index].id
   route_table_id = aws_route_table.ecs_private_rt[count.index].id
