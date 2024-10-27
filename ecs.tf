@@ -108,7 +108,7 @@ resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
       maximum_scaling_step_size = 1000
       minimum_scaling_step_size = 1
       status                    = "ENABLED"
-      target_capacity           = local.asg_desired
+      target_capacity           = local.asg_max
     }
   }
 }
@@ -124,4 +124,33 @@ resource "aws_ecs_cluster_capacity_providers" "ecs_cluster_capacity_providers" {
     weight            = 100
     capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
   }
+}
+
+# task execution role
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "${local.name_prefix}-${random_pet.deployment_id.id}-task-execution-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": ["ecs-tasks.amazonaws.com"]
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_tasks_execution_role_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.id
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_cloudwatch_log_group" "ecs_log_group" {
+  name = "${local.name_prefix}-${random_pet.deployment_id.id}-log-group"
 }
