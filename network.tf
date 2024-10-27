@@ -1,6 +1,7 @@
 resource "aws_vpc" "ecs_vpc" {
   cidr_block           = local.vpc_cidr_block
   enable_dns_hostnames = true
+  enable_dns_support = true
   tags = {
     Name = "${local.name_prefix}-${random_pet.deployment_id.id}-vpc"
   }
